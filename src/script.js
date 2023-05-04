@@ -24,8 +24,8 @@ mesh.rotation.x= Math.PI*.9
 
 scene.add(mesh)
 const size = {
-  width:800,
-  height:600,
+  width:800*2,
+  height:600*2,
 }
 
 // axes helper
