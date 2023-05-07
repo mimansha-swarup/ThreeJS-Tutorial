@@ -1,6 +1,19 @@
 import "./style.css";
 import * as THREE from "three";
-import gsap from "gsap";
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
+
+//  cursor
+const cursor = {
+  x: 0,
+  y: 0,
+};
+window.addEventListener("mousemove", (event) => {
+  //we are dividing with height and width to get value b/w 0 and 1
+  //(to get negative and positive value at left and right)
+  //  here we will get value b/w -.5 to +.5
+  cursor.x = event.clientX / size.width - 0.5;
+  cursor.y = -(event.clientY / size.height - 0.5);
+});
 
 const canvas = document.querySelector("canvas.webgl");
 
@@ -20,11 +33,19 @@ const size = {
 
 // Camera
 const camera = new THREE.PerspectiveCamera(45, size.width / size.height);
-camera.position.z = 5;
 
+// const aspectRatio =  size.width/size.height
+// const camera = new THREE.OrthographicCamera(-1*aspectRatio,1*aspectRatio,1,-1);
+// camera.position.x = 2;
+// camera.position.y = 2;
+camera.position.z = 3;
 camera.lookAt(mesh.position);
 
 scene.add(camera);
+
+// Controls
+const controls =new  OrbitControls(camera, canvas) 
+controls.enableDamping= true
 
 // Render
 
@@ -34,25 +55,20 @@ const renderer = new THREE.WebGLRenderer({
 //
 
 renderer.setSize(size.width, size.height);
-// renderer.render(scene,camera)
 
-// // Time
-//  let time= Date.now()
-// // Clock
-// const clock= new THREE.Clock()
+const clock = new THREE.Clock();
 
-gsap.to(mesh.position, { duration: 1, delay: 2, x: 1 });
-// gsap has it's own tick so no need to do it inside tick func but we need to re render scene and camera
 const tick = () => {
-  //   // one revolution per sec
-  // const currTime= Date.now()
-  // const deltaTime= currTime -time
-  // time= currTime
+  // // mesh.rotation.y = clock.getElapsedTime()
+  // camera.position.x = Math.sin(cursor.x  * Math.PI*2)* 3
+  // camera.position.z = Math.cos(cursor.x * Math.PI*2)* 3;
+  // camera.position.y =cursor.y* Math.PI*2;
 
-  // // Update Object
-  // mesh.rotation.y +=0.01*deltaTime
-  // mesh.rotation.y = clock.getElapsedTime()*Math.PI*2
+  // camera.lookAt(mesh.position)
 
+  // Update Controls
+    controls.update()
+    
   renderer.render(scene, camera);
   window.requestAnimationFrame(tick);
 };
