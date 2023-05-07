@@ -1,49 +1,59 @@
-import './style.css'
-import * as THREE from "three"
+import "./style.css";
+import * as THREE from "three";
+import gsap from "gsap";
 
-const canvas = document.querySelector("canvas.webgl")
+const canvas = document.querySelector("canvas.webgl");
 
 // scene
-const scene = new THREE.Scene()
+const scene = new THREE.Scene();
 
 // Object
-const geometry  = new THREE.BoxGeometry(1,1,1)
-const material = new THREE.MeshBasicMaterial({color: "red"})
-const mesh = new THREE.Mesh(geometry,material)
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: "red" });
+const mesh = new THREE.Mesh(geometry, material);
 
-// mesh.position.x=0.7
-// mesh.position.y=-0.6
-// mesh.position.z=-1
-mesh.position.set(0.7,0.6,1)
-
-// Similarly we can use mes.scale.set(x,y,z)
-mesh.scale.set(2,0.5,0.5)
-
-mesh.rotation.y= Math.PI*1
-mesh.rotation.x= Math.PI*.9 
-
-scene.add(mesh)
+scene.add(mesh);
 const size = {
-  width:800*2,
-  height:600*2,
-}
-
-// axes helper
-const axesHelper = new THREE.AxesHelper()
-scene.add(axesHelper)
+  width: 800,
+  height: 600,
+};
 
 // Camera
-const camera =  new THREE.PerspectiveCamera(45, size.width/size.height )
-camera.position.z=5 
+const camera = new THREE.PerspectiveCamera(45, size.width / size.height);
+camera.position.z = 5;
 
-camera.lookAt(mesh.position)
+camera.lookAt(mesh.position);
 
-scene.add(camera)
+scene.add(camera);
 
 // Render
 
-const renderer =  new THREE.WebGLRenderer({
-  canvas:canvas
-})
+const renderer = new THREE.WebGLRenderer({
+  canvas: canvas,
+});
+//
 
-renderer.render(scene,camera)
+renderer.setSize(size.width, size.height);
+// renderer.render(scene,camera)
+
+// // Time
+//  let time= Date.now()
+// // Clock
+// const clock= new THREE.Clock()
+
+gsap.to(mesh.position, { duration: 1, delay: 2, x: 1 });
+// gsap has it's own tick so no need to do it inside tick func but we need to re render scene and camera
+const tick = () => {
+  //   // one revolution per sec
+  // const currTime= Date.now()
+  // const deltaTime= currTime -time
+  // time= currTime
+
+  // // Update Object
+  // mesh.rotation.y +=0.01*deltaTime
+  // mesh.rotation.y = clock.getElapsedTime()*Math.PI*2
+
+  renderer.render(scene, camera);
+  window.requestAnimationFrame(tick);
+};
+tick();
