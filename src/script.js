@@ -1,49 +1,75 @@
-import './style.css'
-import * as THREE from "three"
+import "./style.css";
+import * as THREE from "three";
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 
-const canvas = document.querySelector("canvas.webgl")
+//  cursor
+const cursor = {
+  x: 0,
+  y: 0,
+};
+window.addEventListener("mousemove", (event) => {
+  //we are dividing with height and width to get value b/w 0 and 1
+  //(to get negative and positive value at left and right)
+  //  here we will get value b/w -.5 to +.5
+  cursor.x = event.clientX / size.width - 0.5;
+  cursor.y = -(event.clientY / size.height - 0.5);
+});
+
+const canvas = document.querySelector("canvas.webgl");
 
 // scene
-const scene = new THREE.Scene()
+const scene = new THREE.Scene();
 
 // Object
-const geometry  = new THREE.BoxGeometry(1,1,1)
-const material = new THREE.MeshBasicMaterial({color: "red"})
-const mesh = new THREE.Mesh(geometry,material)
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: "red" });
+const mesh = new THREE.Mesh(geometry, material);
 
-// mesh.position.x=0.7
-// mesh.position.y=-0.6
-// mesh.position.z=-1
-mesh.position.set(0.7,0.6,1)
-
-// Similarly we can use mes.scale.set(x,y,z)
-mesh.scale.set(2,0.5,0.5)
-
-mesh.rotation.y= Math.PI*1
-mesh.rotation.x= Math.PI*.9 
-
-scene.add(mesh)
+scene.add(mesh);
 const size = {
-  width:800*2,
-  height:600*2,
-}
-
-// axes helper
-const axesHelper = new THREE.AxesHelper()
-scene.add(axesHelper)
+  width: 800,
+  height: 600,
+};
 
 // Camera
-const camera =  new THREE.PerspectiveCamera(45, size.width/size.height )
-camera.position.z=5 
+const camera = new THREE.PerspectiveCamera(45, size.width / size.height);
 
-camera.lookAt(mesh.position)
+// const aspectRatio =  size.width/size.height
+// const camera = new THREE.OrthographicCamera(-1*aspectRatio,1*aspectRatio,1,-1);
+// camera.position.x = 2;
+// camera.position.y = 2;
+camera.position.z = 3;
+camera.lookAt(mesh.position);
 
-scene.add(camera)
+scene.add(camera);
+
+// Controls
+const controls =new  OrbitControls(camera, canvas) 
+controls.enableDamping= true
 
 // Render
 
-const renderer =  new THREE.WebGLRenderer({
-  canvas:canvas
-})
+const renderer = new THREE.WebGLRenderer({
+  canvas: canvas,
+});
+//
 
-renderer.render(scene,camera)
+renderer.setSize(size.width, size.height);
+
+const clock = new THREE.Clock();
+
+const tick = () => {
+  // // mesh.rotation.y = clock.getElapsedTime()
+  // camera.position.x = Math.sin(cursor.x  * Math.PI*2)* 3
+  // camera.position.z = Math.cos(cursor.x * Math.PI*2)* 3;
+  // camera.position.y =cursor.y* Math.PI*2;
+
+  // camera.lookAt(mesh.position)
+
+  // Update Controls
+    controls.update()
+    
+  renderer.render(scene, camera);
+  window.requestAnimationFrame(tick);
+};
+tick();
