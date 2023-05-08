@@ -1,19 +1,6 @@
 import "./style.css";
 import * as THREE from "three";
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
-
-//  cursor
-const cursor = {
-  x: 0,
-  y: 0,
-};
-window.addEventListener("mousemove", (event) => {
-  //we are dividing with height and width to get value b/w 0 and 1
-  //(to get negative and positive value at left and right)
-  //  here we will get value b/w -.5 to +.5
-  cursor.x = event.clientX / size.width - 0.5;
-  cursor.y = -(event.clientY / size.height - 0.5);
-});
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 const canvas = document.querySelector("canvas.webgl");
 
@@ -27,25 +14,42 @@ const mesh = new THREE.Mesh(geometry, material);
 
 scene.add(mesh);
 const size = {
-  width: 800,
-  height: 600,
+  width: window.innerWidth,
+  height: window.innerHeight,
 };
+
+window.addEventListener("resize", () => {
+  // Update Size
+  size.width = window.innerWidth;
+  size.height = window.innerHeight;
+
+  //update camera Aspect
+  camera.aspect =  size.width/size.height
+  camera.updateProjectionMatrix()
+
+  renderer.setSize(size.width, size.height); 
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+window.addEventListener("dblclick", () => {
+  if(!document.fullscreenElement){
+    canvas.requestFullscreen()
+  }else{
+    document.exitFullscreen()
+  }
+});
 
 // Camera
 const camera = new THREE.PerspectiveCamera(45, size.width / size.height);
 
-// const aspectRatio =  size.width/size.height
-// const camera = new THREE.OrthographicCamera(-1*aspectRatio,1*aspectRatio,1,-1);
-// camera.position.x = 2;
-// camera.position.y = 2;
 camera.position.z = 3;
 camera.lookAt(mesh.position);
 
 scene.add(camera);
 
 // Controls
-const controls =new  OrbitControls(camera, canvas) 
-controls.enableDamping= true
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
 
 // Render
 
@@ -55,20 +59,14 @@ const renderer = new THREE.WebGLRenderer({
 //
 
 renderer.setSize(size.width, size.height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-const clock = new THREE.Clock();
 
 const tick = () => {
-  // // mesh.rotation.y = clock.getElapsedTime()
-  // camera.position.x = Math.sin(cursor.x  * Math.PI*2)* 3
-  // camera.position.z = Math.cos(cursor.x * Math.PI*2)* 3;
-  // camera.position.y =cursor.y* Math.PI*2;
-
-  // camera.lookAt(mesh.position)
 
   // Update Controls
-    controls.update()
-    
+  controls.update();
+
   renderer.render(scene, camera);
   window.requestAnimationFrame(tick);
 };

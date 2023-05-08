@@ -1,51 +1,67 @@
 # Three.js Journey
 
-## Camera
+We will fit canvas in viewPort
 
-Camera is an Abstract Class that means we can't use it directly
+Easiest way is to  give `width` and `height`  `c` and `window.innerHeight`
+```javascript 
+const size = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
 
-- Array Camera
-- Stereo Camera
-- Cube Camera
-- Orthographic Camera
-- Perspective Camera
-
-### Array Camera
- render scene from multiple part  on specific area of the render 
- Array camera can be use to render old multiplayer game in which screens use to be split and w diffrent angle was shown 
-
-### Stereo Camera
-It render scene from two camera  that can create depth Effect for special devices like VR headset etc 
-
-### Cube Camera
-It can do 6 render it can be use tom make environment maps , reflection, refraction, shadows 
-
-### Orthographic Camera
-It can do  render scene without perspective, image is far and one image is close both have same height
-
-#### Parameters
-we need to provide `left` `right` `top` and `bottom`
-and last 2 parameters are ``Near`` and `Far`
-
-```javascript
-const camera new THREE.pOrthoGraphicCamera(-1,1,1,-1,0.1,100)
 ```
-### Perspective Camera
-The one we are using 
+and we can see there is soe padding and margin for that we can set margin and padding 0 of body
+```css 
+body{
+  margin:0;
+  padding:0;
+}
+.webgl{
+  position:fixed;
+  left:0;
+  right:0;
+  outline:0;
+}
 
-#### Parameter
- ##### Field of view 
- with large value distortion come object being stretched
- - Vertical version angle
- - in degree
- - also called fov
- - recommended value b/w 45-75
- ##### Aspect Ratio
- it's width of render / height of render
+```
 
- The last Two parameters are `Near` and `Far`
- it means how far and close camera can see
+There is one more issue that if animation is disabled then we can scroll past the canvas using track pad
 
- > If we put extreme value It creates `z-Fighting`
+## Pixel Ratio
 
- `z-Fighting` is basically glitch we see when some stuffs are appearing or disappearing   
+earlier monitors were having 1 pixel ratio
+
+Companies made it pixel ratio of 2  and now a days it's being more and more. One doesn't need high pixel ration
+Pixel ratio of 2 means 4 times more to render
+Pixel ratio of 3 means 9 times more to render
+
+
+But we need to handle it for all the System
+
+
+Highest Pixel ratio is in Mobile device 
+
+```javascript 
+renderer.setPixelRatio(window.devicePixelRatio);
+```
+Three.JS will take care of this but with high pixel ratio Render will be more costly so we need to limit it
+and will cause Performance issue
+
+```javascript 
+
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+```
+we can also put it inside event Listener window's resize
+
+## Full Screen
+```javascript 
+
+window.addEventListener("dblclick", () => {
+  if(!document.fullscreenElement){
+    canvas.requestFullscreen()
+  }else{
+    document.exitFullscreen()
+  }
+});
+```
+above code will not work  in safari browser
