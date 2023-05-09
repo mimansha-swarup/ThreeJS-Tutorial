@@ -1,29 +1,48 @@
 import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import * as dat from "lil-gui";
+import gsap from 'gsap'
 
 const canvas = document.querySelector("canvas.webgl");
 
+// Debug
+
+const gui = new dat.GUI();
+const parameter = {
+  spin:()=>{
+    gsap.to(mesh.rotation,{duration:3, y:mesh.rotation.y + Math.PI*2})
+  }
+}
+
+window.addEventListener("keydown",(event)=>{
+  if(event.key==="h"){
+    if(gui._hidden){
+      gui.show()
+    }else gui.hide()
+  }
+})
 // scene
 const scene = new THREE.Scene();
 
-// Custom Objects
-
-const positionArray = new Float32Array([
-  0,0,0,//first Vertex
-  0,1,0, //second Vertex
-  1,0,0 //third Vertex
-])
-
-const positionAttribute = new THREE.BufferAttribute(positionArray,3)
-const geometry = new THREE.BufferGeometry()
-geometry.setAttribute('position', positionAttribute)
 // Object
-// const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: "red", wireframe:true });
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: "red" });
 const mesh = new THREE.Mesh(geometry, material);
 
 scene.add(mesh);
+
+// DEBug
+// gui.add(mesh.position,"y", -2, 2,0.01) / mim , max step
+// gui.add(mesh.position,"z", -2, 2,0.01)
+gui.add(mesh.position, "y").min(-2).max(2).step(0.01).name("elevation");
+
+gui.add(mesh, "visible").name("Hide");
+gui.add(material, "wireframe").name("Show Wireframe");
+gui.addColor(material, 'color')
+// We can chain On Change here
+gui.add(parameter, "spin").name("Spin");
+
 const size = {
   width: window.innerWidth,
   height: window.innerHeight,
@@ -35,18 +54,18 @@ window.addEventListener("resize", () => {
   size.height = window.innerHeight;
 
   //update camera Aspect
-  camera.aspect =  size.width/size.height
-  camera.updateProjectionMatrix()
+  camera.aspect = size.width / size.height;
+  camera.updateProjectionMatrix();
 
-  renderer.setSize(size.width, size.height); 
+  renderer.setSize(size.width, size.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
 window.addEventListener("dblclick", () => {
-  if(!document.fullscreenElement){
-    canvas.requestFullscreen()
-  }else{
-    document.exitFullscreen()
+  if (!document.fullscreenElement) {
+    canvas.requestFullscreen();
+  } else {
+    document.exitFullscreen();
   }
 });
 
@@ -72,9 +91,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(size.width, size.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-
 const tick = () => {
-
   // Update Controls
   controls.update();
 
