@@ -44,6 +44,7 @@ const heightTexture = textureLoader.load("/textures/door/height.jpg");
 const normalTexture = textureLoader.load("/textures/door/normal.jpg");
 const roughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
 const ambientOcclusionTexture = textureLoader.load("/textures/door/ambientOcclusion.jpg");
+const matCapTexture = textureLoader.load("/textures/matcaps/1.png");
 
 // colorTexture.repeat.x=2
 // colorTexture.repeat.y=3
@@ -56,21 +57,37 @@ const ambientOcclusionTexture = textureLoader.load("/textures/door/ambientOcclus
 colorTexture.rotation =Math.PI/4
 colorTexture.center.x =0.5
 colorTexture.center.y =.5
-// Object
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ map: colorTexture });
-const mesh = new THREE.Mesh(geometry, material);
 
-scene.add(mesh);
+// Object
+const material = new THREE.MeshMatcapMaterial();
+material.matcap= matCapTexture
+
+const sphere = new THREE.Mesh(
+ new THREE.SphereGeometry(.5,16,16),
+ material
+)
+
+sphere.position.x= -1.5
+
+const plane = new THREE.Mesh(
+ new THREE.PlaneGeometry(1,1),
+ material
+)
+const torus = new THREE.Mesh(
+ new THREE.TorusGeometry(.3,.2,16 ,32),
+ material
+)
+
+torus.position.x= 1.5
+
+scene.add(sphere, plane, torus);
+
+// const geometry = new THREE.BoxGeometry(1, 1, 1);
+// const mesh = new THREE.Mesh(geometry, material);
+
+// scene.add(mesh);
 
 // DEBug
-// gui.add(mesh.position,"y", -2, 2,0.01) / mim , max step
-// gui.add(mesh.position,"z", -2, 2,0.01)
-gui.add(mesh.position, "y").min(-2).max(2).step(0.01).name("elevation");
-
-gui.add(mesh, "visible").name("Show");
-gui.add(material, "wireframe").name("Show Wireframe");
-gui.addColor(material, "color");
 // We can chain On Change here
 gui.add(parameter, "spin").name("Spin");
 
@@ -104,7 +121,6 @@ window.addEventListener("dblclick", () => {
 const camera = new THREE.PerspectiveCamera(45, size.width / size.height);
 
 camera.position.z = 3;
-camera.lookAt(mesh.position);
 
 scene.add(camera);
 
