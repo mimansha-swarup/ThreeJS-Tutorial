@@ -68,7 +68,7 @@ scene.add(mesh);
 // gui.add(mesh.position,"z", -2, 2,0.01)
 gui.add(mesh.position, "y").min(-2).max(2).step(0.01).name("elevation");
 
-gui.add(mesh, "visible").name("Hide");
+gui.add(mesh, "visible").name("Show");
 gui.add(material, "wireframe").name("Show Wireframe");
 gui.addColor(material, "color");
 // We can chain On Change here
