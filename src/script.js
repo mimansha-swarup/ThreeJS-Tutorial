@@ -37,9 +37,10 @@ scene.add(hemisphereLight);
 
 // it work with mes Standard material or mesh physical material, physical inherit from standard that's why we can use it
 const rectAreaLight = new THREE.RectAreaLight(0x4c0fff, 10, 1, 1);
+rectAreaLight.position.set(1,0,1)
 scene.add(rectAreaLight);
 
-const spotLight = new THREE.SpotLight(0x78ff00, 5, 10, Math.PI * 0.1, 0.25, 1);
+const spotLight = new THREE.SpotLight(0x78ff00, 5, 1, Math.PI * 0.1, 0.25, 1);
 spotLight.position.set(0,2,3)
 scene.add(spotLight)
 
