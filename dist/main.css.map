@@ -1,0 +1,1 @@
+{"version":3,"file":"main.css","mappings":"AAAA;EACE,QAAQ;EACR,SAAS;AACX;AACA;EACE,cAAc;EACd,MAAM;EACN,OAAO;EACP,SAAS;AACX,C","sources":["webpack:///./src/style.css"],"sourcesContent":["body{\r\n  margin:0;\r\n  padding:0;\r\n}\r\n.webgl{\r\n  position:fixed;\r\n  left:0;\r\n  right:0;\r\n  outline:0;\r\n}"],"names":[],"sourceRoot":""}
